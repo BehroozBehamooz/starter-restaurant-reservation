@@ -28,6 +28,14 @@ function update(table_id, reservation_id){
         For this API, only one table will ever be updated at a time */
 }
 
+function destroy(table_id){
+    return knex(tableName)
+        .select("*")
+        .where({table_id,})
+        .update({reservation_id: null})
+        .then (result => result[0]);
+}
+
 function list(){
     return knex(tableName)
         .select("*")
@@ -38,5 +46,6 @@ module.exports = {
     create,
     read,
     update,
+    delete:destroy,
     list,
 }

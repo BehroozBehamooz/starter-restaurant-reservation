@@ -43,22 +43,24 @@ async function create(req, res){
 }
 
 async function tableExists(req, res, next){
+    req.log.debug({filename:"tables.controller.js", methodName:"create"});
     const { table_id } = req.params;
     if (!table_id){
         return next({
             status : 400,
-            message : `:table_id param is missing in in path: ${req.originalUls}`,
+            message : `:table_id is missing in in path: ${req.originalUls}`,
         });
     }
     const found = await service.read(table_id);
-    if (found){
-        res.locals.table = found;
-        return next();
+    req.log.trace({filename:"tables.controller.js", methodName:"create", table_id, found,});
+    if (!found){
+        return next({
+            status : 404,
+            message : `table_id: ${table_id} not found in path: ${req.originalUls}`,
+        });
     }
-    next({
-        status : 404,
-        message : `table_id: ${table_id} not found in path: ${req.originalUls}`,
-    });
+    res.locals.table = found;
+    next();
 }
 
 function hasSufficientCapacity(req, res, next){
@@ -78,7 +80,7 @@ function hasSufficientCapacity(req, res, next){
 
 function isOccupied(req, res, next){
     const { reservation_id } = res.locals.table;
-    if (reservation_id){
+    if (reservation_id !== null){
         return next({
             status : 400,
             message : "Table is occupied",
@@ -93,6 +95,24 @@ async function update(req, res){
     req.log.debug({fileName: "tables.controller.js", methodName: "update",reservation_id,table_id,});
     const data = await service.update(table_id, reservation_id);
     res.json({ data, });
+}
+
+function isNotOccupied(req, res, next){
+    req.log.debug({fileName: "tables.controller.js", methodName: "isNotOccupied"});
+    const { reservation_id } = res.locals.table;
+    req.log.trace({fileName:"tables.controller.js", methodName:"isNotOccupied", reservation_id});
+    if ( reservation_id === null ){
+        return next({
+            status : 400,
+            message : "Table is not occupied.",
+        });
+    }
+    next();
+}
+
+async function destroy(req, res){
+    const result = await service.delete(res.locals.table.table_id);
+    res.sendStatus(200);
 }
 
 async function list(req, res){
@@ -110,5 +130,6 @@ module.exports ={
         isOccupied,
         asyncErrorBoundry(update)
     ],
+    delete: [asyncErrorBoundry(tableExists), isNotOccupied, asyncErrorBoundry(destroy)],
     list: [asyncErrorBoundry(list)],
 }

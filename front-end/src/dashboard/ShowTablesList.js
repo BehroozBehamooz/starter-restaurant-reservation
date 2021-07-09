@@ -3,14 +3,14 @@ import ErrorAlert from "../layout/ErrorAlert";
 import { listTables } from "../utils/api";
 import ShowTable from "./ShowTable";
 
-function ShowTablesList() {
+function ShowTablesList( { date }) {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
   useEffect(() => {
     const abortController = new AbortController();
     listTables(abortController.signal).then(setTables).catch(setTablesError);
     return () => abortController.abort();
-  }, []);
+  }, [date]);
 
   return (
     <div className="card">
@@ -26,10 +26,14 @@ function ShowTablesList() {
                     <th>Capacity</th>
                     <th>Reservation id</th>
                     <th>Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-              {tables.map( (table, index) => <ShowTable key={index.toString()} table={table} index={index}/>)}
+              {
+                tables.map( (table, index) => 
+                  <ShowTable key={index.toString()} table={table} setTablesError={setTablesError} />)
+              }
             </tbody>
             
         </table>

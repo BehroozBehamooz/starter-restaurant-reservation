@@ -133,3 +133,13 @@ export async function readReservation(reservation_id, signal){
     .then(formatReservationTime);
   return reservation;
 }
+
+export async function deleteSeat(table_id, signal){
+  const url = `${API_BASE_URL}/tables/${table_id}/seat`;
+  const options = {
+    method : "DELETE",
+    headers,
+    signal,
+  }
+  return await fetchJson(url, options);
+}
