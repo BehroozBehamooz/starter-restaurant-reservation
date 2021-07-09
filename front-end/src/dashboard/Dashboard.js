@@ -25,8 +25,7 @@ function Dashboard({ date : thisDate }) {
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
-    // in case of /dashboard with no date params the listReservations function will be called with empty params
-    listReservations( date ? { date } : {} , abortController.signal)
+    listReservations( { date } , abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
     return () => abortController.abort();
@@ -36,14 +35,14 @@ function Dashboard({ date : thisDate }) {
     <main >
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date : {date || "All Dates"}</h4>
+        <h4 className="mb-0">Reservations for date : {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
 
-      <DateButtons date={date || today()}/> 
+      <DateButtons date={date}/> 
       <ShowReservationsList reservations={reservations} />
 
-      <ShowTablesList />
+      <ShowTablesList date={date}/>
 
     </main>
   );
