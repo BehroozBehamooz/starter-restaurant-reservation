@@ -25,7 +25,8 @@ export async function createReservation(reservation, signal){
     body: JSON.stringify({ data: reservation }),
     signal,
   }
-  return await fetchJson(url, options);
+  const newReservation = await fetchJson(url, options);
+  return newReservation;
 }
 
 
@@ -76,11 +77,59 @@ async function fetchJson(url, options, onCancel) {
 export async function listReservations(params, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
   Object.entries(params).forEach(([key, value]) =>
-    url.searchParams.append(key, value.toString())
+    value && url.searchParams.append(key, value.toString())
   );
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
-    .then(formatReservationTime);
+    .then(formatReservationTime)
+    .then( (result) => {
+      return result;
+    });
 }
 
+export async function createTable(table, signal){
+  const url = `${API_BASE_URL}/tables`;
+  const options = {
+    method : "POST",
+    headers,
+    body : JSON.stringify({ data : table }), 
+    signal : signal,
+  }
+  const newTable = await fetchJson(url, options);
+  return newTable;
+}
+  
+export async function listTables(signal){
+  const url = `${API_BASE_URL}/tables`;
+  const options = {
+    method : "GET",
+    headers,
+    signal : signal,
+  }
+  const tables = await fetchJson(url, options);
+  return tables;
+}
 
+export async function updateTable(tableId, reservation_id){
+  const url = `${API_BASE_URL}/tables/${tableId}/seat`;
+  const options = {
+    method : "PUT",
+    headers,
+    body : JSON.stringify({ data : {reservation_id,} }),
+  }
+  const updated = await fetchJson(url, options);
+  return updated;
+}
+
+export async function readReservation(reservation_id, signal){
+  const url = `${API_BASE_URL}/reservations/${reservation_id}`;
+  const options = {
+    method : "GET",
+    headers,
+    signal,
+  }
+  const reservation = await fetchJson(url, options)
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+  return reservation;
+}
