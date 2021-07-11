@@ -13,6 +13,7 @@ function ShowReservationsList({ reservations = [] }){
                     <th >Date</th>
                     <th >Time</th>
                     <th >Party</th>
+                    <th >Status</th>
                     <th >Action</th>
                 </tr>
             </thead>

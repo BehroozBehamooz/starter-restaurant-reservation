@@ -1,6 +1,7 @@
 const service = require("./tables.service");
 const asyncErrorBoundry = require("../errors/asyncErrorBoundary");
 const { reservationExists } = require("../reservations/reservations.controller");
+const filename = "tables.controllers.js";
 
 function hasData(req, res, next){
     if (!req.body.data){
@@ -35,15 +36,15 @@ function hasValidCapacity(req, res, next){
 }
 
 async function create(req, res){
-    req.log.debug({__filename, methodName:"create"});
+    req.log.debug({filename, methodName:"create"});
     const newTable = req.body.data;
     const data = await service.create(newTable);
-    req.log.trace({__filename, methodName:"create", data,});
+    req.log.trace({filename, methodName:"create", data,});
     res.status(201).json({ data, });
 }
 
 async function tableExists(req, res, next){
-    req.log.debug({filename:"tables.controller.js", methodName:"create"});
+    req.log.debug({filename, methodName:"tableExists"});
     const { table_id } = req.params;
     if (!table_id){
         return next({
@@ -52,7 +53,7 @@ async function tableExists(req, res, next){
         });
     }
     const found = await service.read(table_id);
-    req.log.trace({filename:"tables.controller.js", methodName:"create", table_id, found,});
+    req.log.trace({filename, methodName:"tableExists", table_id, found,});
     if (!found){
         return next({
             status : 404,
@@ -64,10 +65,10 @@ async function tableExists(req, res, next){
 }
 
 function hasSufficientCapacity(req, res, next){
-    req.log.debug({fileName:"tables.controller.js", methodName:"hasSufficientCapacity"});
+    req.log.debug({filename, methodName:"hasSufficientCapacity"});
     const { capacity } =  res.locals.table;
     const { people } = res.locals.reservation;
-    req.log.trace({fileName:"tables.controller.js", methodName:"hasSufficientCapacity", capacity, people});
+    req.log.trace({filename, methodName:"hasSufficientCapacity", capacity, people});
 
     if (people > capacity){
         return next({
@@ -90,17 +91,18 @@ function isOccupied(req, res, next){
 }
 
 async function update(req, res){
+    req.log.debug({filename, methodName: "update"});
     const { reservation_id } = req.body.data;
     const table_id  = Number(req.params.table_id);
-    req.log.debug({fileName: "tables.controller.js", methodName: "update",reservation_id,table_id,});
     const data = await service.update(table_id, reservation_id);
+    req.log.trace({filename, methodName: "update", reservation_id, table_id, data});
     res.json({ data, });
 }
 
 function isNotOccupied(req, res, next){
-    req.log.debug({fileName: "tables.controller.js", methodName: "isNotOccupied"});
+    req.log.debug({filename, methodName: "isNotOccupied"});
     const { reservation_id } = res.locals.table;
-    req.log.trace({fileName:"tables.controller.js", methodName:"isNotOccupied", reservation_id});
+    req.log.trace({filename, methodName:"isNotOccupied", reservation_id});
     if ( reservation_id === null ){
         return next({
             status : 400,
@@ -111,8 +113,10 @@ function isNotOccupied(req, res, next){
 }
 
 async function destroy(req, res){
-    const result = await service.delete(res.locals.table.table_id);
-    res.sendStatus(200);
+    req.log.debug({filename, methodName:"destroy"});
+    const data = await service.delete(res.locals.table.table_id);
+    req.log.trace({filename, methodName:"destroy" , data,});
+    res.json({ data, });
 }
 
 async function list(req, res){
@@ -124,11 +128,11 @@ module.exports ={
     create: [hasData, hasValidTableName, hasValidCapacity, asyncErrorBoundry(create)],
     update: [
         hasData, 
-        asyncErrorBoundry(reservationExists), 
+        reservationExists, 
         asyncErrorBoundry(tableExists),
         hasSufficientCapacity,
         isOccupied,
-        asyncErrorBoundry(update)
+        asyncErrorBoundry(update),
     ],
     delete: [asyncErrorBoundry(tableExists), isNotOccupied, asyncErrorBoundry(destroy)],
     list: [asyncErrorBoundry(list)],

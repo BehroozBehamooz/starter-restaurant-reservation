@@ -33,7 +33,7 @@ function destroy(table_id){
         .select("*")
         .where({table_id,})
         .update({reservation_id: null})
-        .then (result => result[0]);
+        .then ( (result) => result[0] );
 }
 
 function list(){
