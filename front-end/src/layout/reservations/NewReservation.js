@@ -49,7 +49,6 @@ function NewReservation() {
   function isFuture(){
     const now = new Date();
     const date = new Date(reservation.reservation_date+" "+reservation.reservation_time);
-    //console.log("now: ",now,"  |  date: ",date)
     if ( now > date){
       validationErrorMessages.push("Only future reservations are allowed.");
     }
@@ -83,8 +82,6 @@ function NewReservation() {
         setCreateError(error);
         return;
       }
-      //console.log("reservation_date: ",reservation.reservation_date);  
-      //console.log("reservation_time: ",reservation.reservation_time);    
       reservation.mobile_number = mobile.replace(/[^0-9]/g,"");
       reservation.people = Number(reservation.people);
       createReservation(reservation)

@@ -37,7 +37,7 @@ function NewTable(){
             <div className="card">
                 <div className="card-header alert alert-primary">New Table</div>
                 <div className="card-body">
-                    <div className="row border border-2">
+                    <div className="row">
                     <div className="form-group col-4">
                             <label htmlFor="table_name">Table Name</label>
                             <div className="input-group">

@@ -5,7 +5,6 @@ Since everything is now Online. Restaurants are encouraged to have an online res
 
 Restaurant personnel use this application to make a new reservation when a customer calls to request a reservation.
 
-
 ### This Project is built in _ReactJS_ for the UI tire, _ExpressJS_ for the application tire, and PostgreSQL for database tire.
 
 React makes it possible to quickly build a complex web application that uses data from an external API and keeps the URL in sync with what is displayed on the screen.
