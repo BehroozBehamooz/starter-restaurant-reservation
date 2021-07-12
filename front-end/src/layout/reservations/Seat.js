@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router";
-import { listTables, updateTable, readReservation } from "../../utils/api";
+import { listTables, readReservation, seatReservation } from "../../utils/api";
 import { Link } from "react-router-dom";
 import ErrorAlert from "../ErrorAlert";
 import ShowReservationsList from "../../dashboard/ShowReservationsList";
@@ -45,7 +45,6 @@ function Seat() {
     );
     if (index > -1 && tables[index].capacity < reservation.people) {
       validationErrors.push("Number of guests are more than table's capacity");
-      setErr("Number of guests are more than table's capacity");
     }
   }
 
@@ -56,10 +55,11 @@ function Seat() {
       hasCapacity();
       if (validationErrors.length) {
         throw new Error(validationErrors.join(", "));
-      } else {
-        updateTable(tableId, reservation_id)
-          .then(history.push("/dashboard"))
-          .catch(setErr);
+      } 
+      else {
+        seatReservation(reservation_id, tableId)
+        .then(()=>history.push("/dashboard"))
+        .catch((error) => {setErr(error)});
       }
     } catch (error) {
       setErr(error);
@@ -116,30 +116,3 @@ function Seat() {
 }
 
 export default Seat;
-
-
-
-/* <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>id#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Phone</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Guests</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{reservation.reservation_id}</td>
-                <td>{reservation.first_name}</td>
-                <td>{reservation.last_name}</td>
-                <td>{reservation.mobile_number}</td>
-                <td>{reservation.reservation_date}</td>
-                <td>{reservation.reservation_time}</td>
-                <td>{reservation.people}</td>
-              </tr>
-            </tbody>
-          </table> */

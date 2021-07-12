@@ -52,9 +52,8 @@ async function fetchJson(url, options, onCancel) {
     if (response.status === 204) {
       return null;
     }
-
+    //console.log("response: ",response);
     const payload = await response.json();
-
     if (payload.error) {
       return Promise.reject({ message: payload.error });
     }
@@ -81,10 +80,7 @@ export async function listReservations(params, signal) {
   );
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
-    .then(formatReservationTime)
-    .then( (result) => {
-      return result;
-    });
+    .then(formatReservationTime);
 }
 
 export async function createTable(table, signal){
@@ -110,17 +106,6 @@ export async function listTables(signal){
   return tables;
 }
 
-export async function updateTable(tableId, reservation_id){
-  const url = `${API_BASE_URL}/tables/${tableId}/seat`;
-  const options = {
-    method : "PUT",
-    headers,
-    body : JSON.stringify({ data : {reservation_id,} }),
-  }
-  const updated = await fetchJson(url, options);
-  return updated;
-}
-
 export async function readReservation(reservation_id, signal){
   const url = `${API_BASE_URL}/reservations/${reservation_id}`;
   const options = {
@@ -134,7 +119,7 @@ export async function readReservation(reservation_id, signal){
   return reservation;
 }
 
-export async function deleteSeat(table_id, signal){
+export async function finishReservation(table_id, signal){
   const url = `${API_BASE_URL}/tables/${table_id}/seat`;
   const options = {
     method : "DELETE",
@@ -142,4 +127,16 @@ export async function deleteSeat(table_id, signal){
     signal,
   }
   return await fetchJson(url, options);
+}
+
+export async function seatReservation(reservation_id, table_id, signal){
+  const url = `${API_BASE_URL}/tables/${table_id}/seat`;
+  const options = {
+    method : "PUT",
+    headers,
+    signal,
+    body : JSON.stringify({ data : {reservation_id,} }),
+  }
+  const updated = await fetchJson(url, options);
+  return updated;
 }

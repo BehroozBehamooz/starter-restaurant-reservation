@@ -13,11 +13,15 @@ function ShowReservationsList({ reservations = [] }){
                     <th >Date</th>
                     <th >Time</th>
                     <th >Party</th>
+                    <th >Status</th>
                     <th >Action</th>
                 </tr>
             </thead>
             <tbody>
-                {reservations.map((reservation, index) => <ShowReservation key={index.toString()} reservation={reservation} index={index}/> )}
+                {reservations.map((reservation, index) => 
+                    reservation.status !== "finished" &&
+                        <ShowReservation key={index.toString()} reservation={reservation}/> )
+                }
             </tbody>
         </table>
     );

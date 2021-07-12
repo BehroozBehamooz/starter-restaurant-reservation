@@ -20,6 +20,7 @@ function list(date){
         return knex(tableName)
             .select()
             .where({ reservation_date: date })
+            .andWhereNot({ status : "finished" })
             .orderBy("reservation_time");
     }
     else{
