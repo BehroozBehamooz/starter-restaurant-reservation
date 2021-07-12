@@ -135,6 +135,17 @@ function isEligibleTime(req, res, next){
   next();
 }
 
+function statusIsBooked(req, res, next){
+  const { status } = req.body.data;
+  if ( status && status !== "booked" ){
+    return next({
+      status : 400,
+      message : `value of status property can not be ${status}`, 
+    });
+  }
+  next();
+}
+
 async function create(req, res){
   const data = await service.create(req.body.data);  
   res.status(201).json({ data, });
@@ -209,6 +220,7 @@ module.exports = {
     isNotTuesday,
     isFuture,
     isEligibleTime,
+    statusIsBooked,
     asyncErrorBoundary(create),
   ],
   read:[hasReservationId, asyncErrorBoundary(reservationExists), read],

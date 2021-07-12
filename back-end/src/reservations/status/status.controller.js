@@ -19,7 +19,17 @@ function hasValidStatus(req, res, next){
     if ( !validStatus.includes(res.locals.status) ){
         return next({
             status : 400,
-            message : "Status must be booked, seated, or finished",
+            message : `${res.locals.status} is not a valid status`,
+        });
+    }
+    next();
+}
+
+function reservationIsFinished(req, res, next){
+    if ( res.locals.reservation.status === "finished" ){
+        return next({
+            status : 400,
+            message : "a finished reservation cannot be updated"
         });
     }
     next();
@@ -33,5 +43,10 @@ async function update(req, res){
 }
 
 module.exports = {
-    update : [bodyHasStatus, hasValidStatus, asyncErrorBoundary(update)],
+    update : [
+        bodyHasStatus, 
+        hasValidStatus, 
+        reservationIsFinished, 
+        asyncErrorBoundary(update)
+    ],
 }

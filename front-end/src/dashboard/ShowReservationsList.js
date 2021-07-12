@@ -18,7 +18,10 @@ function ShowReservationsList({ reservations = [] }){
                 </tr>
             </thead>
             <tbody>
-                {reservations.map((reservation, index) => <ShowReservation key={index.toString()} reservation={reservation} index={index}/> )}
+                {reservations.map((reservation, index) => 
+                    reservation.status !== "finished" &&
+                        <ShowReservation key={index.toString()} reservation={reservation}/> )
+                }
             </tbody>
         </table>
     );

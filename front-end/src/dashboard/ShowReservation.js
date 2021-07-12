@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function ShowReservation({ reservation, index }) {
+function ShowReservation({ reservation }) {
+
   return (
     <tr>
       <td>{reservation.reservation_id}</td>

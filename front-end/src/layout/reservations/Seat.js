@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router";
-import { listTables, updateTable, readReservation, updateReservationStatus } from "../../utils/api";
+import { listTables, readReservation, seatReservation } from "../../utils/api";
 import { Link } from "react-router-dom";
 import ErrorAlert from "../ErrorAlert";
 import ShowReservationsList from "../../dashboard/ShowReservationsList";
@@ -57,12 +57,9 @@ function Seat() {
         throw new Error(validationErrors.join(", "));
       } 
       else {
-        updateTable(tableId, reservation_id)
-          .then(()=>updateReservationStatus(reservation_id, "seated"))
-          .then(()=>history.push("/dashboard"))
-          .catch((error) => {
-            setErr(error)
-          });
+        seatReservation(reservation_id, tableId)
+        .then(()=>history.push("/dashboard"))
+        .catch((error) => {setErr(error)});
       }
     } catch (error) {
       setErr(error);
