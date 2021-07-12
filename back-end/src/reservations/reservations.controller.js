@@ -200,10 +200,10 @@ function read(req, res){
  * List handler for reservation resources
  */
  async function list(req, res) {
-  req.log.debug({filename, methodName:"list"});
-  const { date } = req.query;
-  const data = await service.list(date);
-  req.log.trace({filename, methodName:"list", date, data});
+  const param = req.query;
+  req.log.debug({filename, methodName:"list", NumberOfParams:Object.keys(param).length}, param);
+  const data = await service.list(param);
+  req.log.trace({filename, methodName:"list", param, data});
   res.json({data,});
 }
 
@@ -224,7 +224,7 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   read:[hasReservationId, asyncErrorBoundary(reservationExists), read],
-  list:[hasValidDateFormat, asyncErrorBoundary(list)],
+  list:[ asyncErrorBoundary(list)],
   bodyHasData,
   reservationExists : [hasReservationId, asyncErrorBoundary(reservationExists)],
 };
