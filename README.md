@@ -33,6 +33,45 @@ back-end: recieving and validationg client requests and accessing the database t
 
 -----------------------*************************************************----------------------------
 
+#The API services highlights:
+
+### Situation 1:
+-  **method** : *PUT* 
+- **path** : */tables/:table_id/seat/*
+- **body** : *{ data: { reservation_id: x } }*
+- **us04** : Clicking the Seat button assigns a reservation to a table
+- **database** : The field `reservation_id` in `tables` table will be updated in database
+- **EX**: 
+  - To do so the client sends a put request to /tables/2/seat/ 
+  - And the body of request is body : { data: { reservation_id: 7 } }
+- **us06** : First do us04 and after a reservation is assigned to a table, then the reservation status needs to be updated to "seated".
+- **database**: The `tables` table will be updated as of us04 and at the same time the field `status` in `reservations` table will be updated too using knex.transactions();
+
+#### Situation 2:
+- **method** : *DELETE*
+- **path** : */tables/:table_id/seat/*
+- **us05** : Clicking the Finish button in tables area will remove table's assignment to a reservation
+- **database**: The `reservation_id` in `tables` table will be updated and will be assigned to null in database
+- **EX**: 
+  - the client sends a Delete request to /tables/2/seat/ 
+- **us06** : First do us05 and after the table's assignment to a reservation is removed then the reservation status will be updated to "finished".
+- **database**: The field `reservation_id` in `tables` table will be updated to null as of us05 and at the same time the field `status` in `reservations` table will be updated too using knex.transactions();
+
+#### Situation 3:
+- **method** : *PUT*
+-   **path** : */reservations/:reservation_id/status*
+-   **body** : *{data: { status: "<new-status>" } }*
+- **us06** : Clicking the Seat button changes the status of a reservation to `seated`. Clicking the Finish button in tables area changes the status of a reservation to `finished`
+- **database** : The field `status` in the `reservations` table will be updated
+- **ex**:
+  - The client sends a put request to /reservations/:reservation_id/status 
+  - And the body of request is body : { data : { status : "seated" } }
+
+**`Note 1`** : In the Situation1 after combining 2 user stories us04 & us06, after clicking on "Seat" button, it will update field `status` of a reservation to "seated" and will assign `reservation.reservation_id` to the field `table.reservation_id` of a table. So situation3 will cause inconsictancy and because it might change table `reservations` without affecting table `tables`. For example when field `status` in table `reservations` is changed to `seated` then there should be a table that is assigned to that reservation. it means field `reservation_id` in table `tables` also needs to be updated. so it's better to use Situation1 in the frontend since it updates both tables `reservations` and `tables` and keep them in sync to eachother. and leave Situation3 for testing purposes in the back-end only.
+
+**`Note 2`** : In the Situation2 after combining 2 user stories us05 & us06, after clicking on "Finish" button, it will remove the reservation assignment to a table as required in us05 and will update the the status of a reservation to "finshed" as required in us06. Both needs to be done at the same time to have both `reservations` and `tables` synced. so Situation3 just make a change to one table and might violate the consistency and better not to be used in front-end.
+
+
 # Capstone: Restaurant Reservation System
 
 > You have been hired as a full stack developer at _Periodic Tables_, a startup that is creating a reservation system for fine dining restaurants.
