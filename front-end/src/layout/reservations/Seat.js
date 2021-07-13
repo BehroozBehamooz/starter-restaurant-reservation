@@ -107,7 +107,7 @@ function Seat() {
           Reservation Information
         </div>
         <div className="card-body">
-            <ShowReservationsList reservations={[reservation]}/>
+            <ShowReservationsList reservations={[reservation]} setErr={setErr}/>
           
         </div>
       </div>

@@ -15,7 +15,7 @@ import ShowReservationsList from "./ShowReservationsList";
 
 function Dashboard({ date : thisDate }) {
   const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  const [dashboardError, setDashboardError] = useState(null);
   const loc = useLocation();
   let query = new URLSearchParams(loc.search);
   const date = query.get("date") || today();
@@ -24,10 +24,10 @@ function Dashboard({ date : thisDate }) {
 
   function loadDashboard() {
     const abortController = new AbortController();
-    setReservationsError(null);
+    setDashboardError(null);
     listReservations( { date } , abortController.signal)
       .then(setReservations)
-      .catch(setReservationsError);
+      .catch(setDashboardError);
     return () => abortController.abort();
   }
 
@@ -37,10 +37,10 @@ function Dashboard({ date : thisDate }) {
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for date : {date}</h4>
       </div>
-      <ErrorAlert error={reservationsError} />
+      <ErrorAlert error={dashboardError} />
 
       <DateButtons date={date}/> 
-      <ShowReservationsList reservations={reservations} />
+      <ShowReservationsList reservations={reservations} setDashboardError={setDashboardError}/>
 
       <ShowTablesList date={date}/>
 

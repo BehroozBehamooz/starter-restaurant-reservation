@@ -124,14 +124,12 @@ function isEligibleTime(req, res, next){
   }else if ( request < now ){
     message = "Server: The Reservation time you entered is passed.";
   }
-
   if (message.length){
     return next({
       status : 400,
       message,
     });
   }
-
   next();
 }
 
@@ -165,7 +163,8 @@ function hasReservationId(req, res, next){
     const { reservation_id } = data;
     if ( reservation_id ){
       res.locals.reservation_id = reservation_id;
-      return next();    }
+      return next();    
+    }
   }
   return next({
     status : 400,
@@ -195,18 +194,23 @@ function read(req, res){
   res.json({ data : res.locals.reservation});
 }
 
+async function update(req, res){
+  const reservation_id = Number(res.locals.reservation_id);
+  const editedReservation = req.body.data;
+  req.log.debug({filename, methodName:"update", reservation_id, editedReservation,});
+  const data = await service.update(reservation_id, editedReservation);
+  req.log.trace({filename, methodName:"update", data, });
 
-/**
- * List handler for reservation resources
- */
- async function list(req, res) {
+  res.json({ data, });
+}
+
+async function list(req, res) {
   const param = req.query;
   req.log.debug({filename, methodName:"list", NumberOfParams:Object.keys(param).length}, param);
   const data = await service.list(param);
   req.log.trace({filename, methodName:"list", param, data});
   res.json({data,});
 }
-
 
 module.exports = {
   create:[
@@ -224,6 +228,21 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   read:[hasReservationId, asyncErrorBoundary(reservationExists), read],
+  update: [
+    hasReservationId,
+    asyncErrorBoundary(reservationExists),
+    bodyHasData, 
+    hasValidFirstName, 
+    hasValidLastName, 
+    hasValidPeopleNumber,
+    hasValidMobile, 
+    hasValidDateFormat, 
+    hasValidTimeFormat,
+    isNotTuesday,
+    isFuture,
+    isEligibleTime,
+    statusIsBooked,
+    asyncErrorBoundary(update)],
   list:[ asyncErrorBoundary(list)],
   bodyHasData,
   reservationExists : [hasReservationId, asyncErrorBoundary(reservationExists)],

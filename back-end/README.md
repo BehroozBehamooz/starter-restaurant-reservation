@@ -9,7 +9,7 @@ Since everything is now Online. Restaurants are encouraged to have an online res
 
 Restaurant personnel use this application to make a new reservation when a customer calls to request a reservation.
 
-#The API tier services highlights:
+#The API services highlights:
 
 ### Situation 1:
 -  **method** : *PUT* 
