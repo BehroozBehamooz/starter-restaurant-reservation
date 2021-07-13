@@ -68,7 +68,7 @@ function Search() {
         </div>
       </form>
       {reservations.length > 0 &&
-         <ShowReservationsList reservations={reservations} /> }
+         <ShowReservationsList reservations={reservations} setErr={setErr}/> }
     </div>
   );
 }

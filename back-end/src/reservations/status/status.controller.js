@@ -15,7 +15,7 @@ function bodyHasStatus(req, res, next){
 }
 
 function hasValidStatus(req, res, next){
-    const validStatus = ["booked", "seated", "finished"];
+    const validStatus = ["booked", "seated", "finished", "cancelled"];
     if ( !validStatus.includes(res.locals.status) ){
         return next({
             status : 400,

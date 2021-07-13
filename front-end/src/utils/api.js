@@ -17,17 +17,7 @@ headers.append("Content-Type", "application/json");
 
 // Since the route in the backend does not exists I use an array for now
 
-export async function createReservation(reservation, signal){
-  const url=`${API_BASE_URL}/reservations`;
-  const options={
-    method : "POST",
-    headers,
-    body: JSON.stringify({ data: reservation }),
-    signal,
-  }
-  const newReservation = await fetchJson(url, options);
-  return newReservation;
-}
+
 
 
 /**
@@ -81,6 +71,30 @@ export async function listReservations(params, signal) {
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
+}
+
+export async function createReservation(reservation, signal){
+  const url=`${API_BASE_URL}/reservations`;
+  const options={
+    method : "POST",
+    headers,
+    body: JSON.stringify({ data: reservation }),
+    signal,
+  }
+  const newReservation = await fetchJson(url, options);
+  return newReservation;
+}
+
+export async function updateReservation(reservation_id, reservation, signal){
+  const url=`${API_BASE_URL}/reservations/${reservation_id}`;
+  const options={
+    method : "PUT",
+    headers,
+    body: JSON.stringify({ data: reservation }),
+    signal,
+  }
+  const updatedReservation = await fetchJson(url, options);
+  return updatedReservation;
 }
 
 export async function createTable(table, signal){
@@ -139,4 +153,16 @@ export async function seatReservation(reservation_id, table_id, signal){
   }
   const updated = await fetchJson(url, options);
   return updated;
+}
+
+export async function cancelReservation(reservation_id, signal){
+  const url = `${API_BASE_URL}/reservations/${reservation_id}/status`;
+  const options = {
+    method : "PUT",
+    headers,
+    body : JSON.stringify({data: { status: "cancelled" } }),
+    signal,
+  }
+  const cancelledReservation = await fetchJson(url, options);
+  return cancelledReservation;
 }

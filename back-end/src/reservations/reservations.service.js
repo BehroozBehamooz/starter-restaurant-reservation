@@ -14,6 +14,13 @@ function read(reservation_id) {
     .first();
 }
 
+function update(reservation_id, editedReservation){
+    return knex(tableName)
+        .where({ reservation_id, })
+        .update(editedReservation, "*")
+        .then( (result)=>result[0] );
+}
+
 function list(param) {
   if (Object.keys(param).length) {
     const [key, value] = Object.entries(param)[0];
@@ -46,5 +53,6 @@ function list(param) {
 module.exports = {
   create,
   read,
+  update,
   list,
 };
