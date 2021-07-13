@@ -11,6 +11,10 @@ function ShowReservation({ reservation, setErr }) {
       .catch(setErr);
     }
   }
+  const isBooked = reservation.status === "booked";
+  const classNameStatus = isBooked ? 
+    " border border-1 border-primary rounded-pill p-2" : 
+    " bg-info text-light rounded-pill p-2 border border-2 border-primary "
   return (
     <tr>
       <td>{reservation.reservation_id}</td>
@@ -20,10 +24,10 @@ function ShowReservation({ reservation, setErr }) {
       <td>{reservation.reservation_date}</td>
       <td>{reservation.reservation_time}</td>
       <td>{reservation.people}</td>
-      <td data-reservation-id-status={reservation.reservation_id}>
-        {reservation.status}
+      <td className="align-middle" data-reservation-id-status={reservation.reservation_id}>
+        <span className={classNameStatus}><strong>{reservation.status}</strong></span>
       </td>
-      <td>
+      <td className="text-center">
         {reservation.status === "booked" && (
           <>
             <Link
