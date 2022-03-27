@@ -1,0 +1,14 @@
+
+.backicon {
+    background-image: url("./bookmark-white.png");
+    background-size: 4rem;
+    background-repeat: no-repeat;
+    color: brown;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    /* align-items: center;    */
+    padding: 12px;
+    
+}
