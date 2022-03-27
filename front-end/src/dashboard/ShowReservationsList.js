@@ -3,9 +3,9 @@ import ShowReservation from "./ShowReservation";
 
 function ShowReservationsList({ reservations = [], setErr=()=>{} }){
     return (
-        <table className="table table-striped ">
-            <thead>
-                <tr className="bg-primary text-white">
+        <table className="table table-striped">
+            <thead >
+                <tr className="bg-primary text-white ">
                     <th >id#</th>
                     <th >First Name</th>
                     <th >Last Name</th>
@@ -14,7 +14,7 @@ function ShowReservationsList({ reservations = [], setErr=()=>{} }){
                     <th >Time</th>
                     <th >Party</th>
                     <th >Status</th>
-                    <th >Seat / Edit / Cancel</th>
+                    <th className="text-center">Seat / Edit / Cancel</th>
                 </tr>
             </thead>
             <tbody>

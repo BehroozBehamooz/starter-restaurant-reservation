@@ -13,7 +13,7 @@ function ShowTablesList( { date }) {
   }, [date]);
 
   return (
-    <div className="card">
+    <div className="card p-2">
       <div className="card-header">
         <h5> List of Tables and Status</h5>
       </div>
@@ -26,7 +26,7 @@ function ShowTablesList( { date }) {
                     <th>Capacity</th>
                     <th>Reservation id</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>

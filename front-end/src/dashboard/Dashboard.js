@@ -6,6 +6,7 @@ import { today } from "../utils/date-time";
 import DateButtons from "./DateButtons";
 import ShowTablesList from "./ShowTablesList";
 import ShowReservationsList from "./ShowReservationsList";
+import "../App.css";
 /**
  * Defines the dashboard page.
  * @param date
@@ -13,7 +14,7 @@ import ShowReservationsList from "./ShowReservationsList";
  * @returns {JSX.Element}
  */
 
-function Dashboard({ date : thisDate }) {
+function Dashboard({ date: thisDate }) {
   const [reservations, setReservations] = useState([]);
   const [dashboardError, setDashboardError] = useState(null);
   const loc = useLocation();
@@ -25,25 +26,32 @@ function Dashboard({ date : thisDate }) {
   function loadDashboard() {
     const abortController = new AbortController();
     setDashboardError(null);
-    listReservations( { date } , abortController.signal)
+    listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setDashboardError);
     return () => abortController.abort();
   }
-
+  // const style = {
+  //   background: `url("https://pic.onlinewebfonts.com/svg/img_399203.png")`,
+  //   width: "50px",
+  //   height: "50px",
+  // };
   return (
-    <main >
+    <main>
       <h1>Dashboard</h1>
+      {/* <p className="backicon">Free</p>
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for date : {date}</h4>
-      </div>
+      </div> */}
       <ErrorAlert error={dashboardError} />
 
-      <DateButtons date={date}/> 
-      <ShowReservationsList reservations={reservations} setDashboardError={setDashboardError}/>
+      <DateButtons date={date} />
+      <ShowReservationsList
+        reservations={reservations}
+        setDashboardError={setDashboardError}
+      />
 
-      <ShowTablesList date={date}/>
-
+      <ShowTablesList date={date} />
     </main>
   );
 }
